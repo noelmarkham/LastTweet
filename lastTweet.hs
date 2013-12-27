@@ -85,7 +85,6 @@ requestAuthToken key secret = withManager $ \manager -> httpLbs req manager
 getToken :: BL.ByteString -> Maybe BL.ByteString
 getToken jsonString = fmap accessToken $ J.decode jsonString
 
--- todo parameterize screen name
 twitterRequest :: BL.ByteString -> BL.ByteString -> IO (Response BL.ByteString)
 twitterRequest token account = withManager $ \manager -> httpLbs req manager
           where req = def {
@@ -102,12 +101,10 @@ twitterRequest token account = withManager $ \manager -> httpLbs req manager
 getTwitterResponse :: BL.ByteString -> Maybe TwitterResponse
 getTwitterResponse jsonString = J.decode jsonString >>= listToMaybe
 
--- TODO this should probably be in config?
 format :: BL.ByteString -> String
 format originalString = foldl replace (BL.unpack originalString) [(mkRegex "http.*", ""), (mkRegex "\xc3\xa2\xc2\x80\xc2\x93", "-")]
---format = BL.unpack
 
---              acc string -> (regex, replacement) -> new string
+-- acc string -> (regex, replacement) -> new string
 replace :: String -> (Regex, String) -> String
 replace string (regex, new) = subRegex regex string new
 
